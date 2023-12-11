@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_news_app/feature/daily_news/presentation/bloc/article/remote/remote_article_bloc.dart';
+import 'package:flutter_news_app/feature/daily_news/presentation/bloc/article/remote/remote_article_state.dart';
 import 'package:flutter_news_app/feature/daily_news/presentation/widgets/article_tile.dart';
 
 class NewsHomePage extends StatelessWidget {
@@ -15,7 +19,7 @@ class NewsHomePage extends StatelessWidget {
   _buildAppBar() {
     return AppBar(
       title: const Text(
-        'Title',
+        'Daily News',
         style: TextStyle(color: Colors.black),
       ),
       actions: [
@@ -32,7 +36,27 @@ class NewsHomePage extends StatelessWidget {
   }
 
   _buildBody() {
-    return const ArticleWidget();
+    return BlocBuilder<RemoteArticleBloc, RemoteArticleState>(
+      builder: (context, state) {
+        if (state is RemoteArticlesLoading) {
+          return const Center(child: CupertinoActivityIndicator());
+        }
+        if (state is RemoteArticlesError) {
+          return const Center(child: Icon(Icons.refresh));
+        }
+        if (state is RemoteArticlesDone) {
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(index.toString()),
+              );
+            },
+            itemCount: state.articles!.length,
+          );
+        }
+        return const SizedBox();
+      },
+    );
   }
 
 }
