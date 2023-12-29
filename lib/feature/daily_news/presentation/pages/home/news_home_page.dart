@@ -47,8 +47,11 @@ class NewsHomePage extends StatelessWidget {
         if (state is RemoteArticlesDone) {
           return ListView.builder(
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(index.toString()),
+              return ArticleWidget(
+                article: state.articles![index],
+                onArticlePressed: (article) {
+                  print("ajib");
+                },
               );
             },
             itemCount: state.articles!.length,
